@@ -1,7 +1,6 @@
 #!/bin/bash
 
 REPO=murb-web
-cd "$HOME/$REPO"
 sudo su
 git pull
 # Install pnpm globally if not already installed
