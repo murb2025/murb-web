@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO=murb
+REPO=murb-web
 cd "$HOME/$REPO"
 sudo su
 git pull
