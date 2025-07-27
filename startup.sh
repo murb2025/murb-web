@@ -3,7 +3,7 @@
 # Author: Sourabh Mishra
 # Date: 28th Sept 2024
 
-VM_INSTANCE_NAME=$1
+VM_INSTANCE_NAME="murb-web"
 export INSTANCE_NAME="$VM_INSTANCE_NAME"
 echo "export INSTANCE_NAME='$VM_INSTANCE_NAME'" >> ~/.bashrc
 sudo hostnamectl set-hostname $VM_INSTANCE_NAME
@@ -20,7 +20,7 @@ sudo apt install -y caddy apt-transport-https ca-certificates curl git build-ess
 
 sudo npm install -g pm2@latest
 
-git clone "https://rbot:<github_path_token>/<github_org_name>/$REPO.git" "$HOME/$REPO"
+git clone "https://rbot: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@github.com/murb2025/$REPO.git" "$HOME/$REPO"
 
 # SETUP CADDY
 CADDY_DOMAIN="${VM_INSTANCE_NAME}.opengig.work"
