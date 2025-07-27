@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /design/
+Disallow: /js/
+Disallow: /css/
+Disallow: /admin/
+Disallow: /tmp/
+Disallow: /cgi-bin/
+Disallow: /download/
+Disallow: /includes/
+Disallow: /modules/
+Allow: /
+
+Sitemap: https://murb.in/sitemap.xml

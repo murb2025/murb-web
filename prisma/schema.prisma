@@ -1,0 +1,417 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model users {
+  id               String             @id @default(uuid())
+  username         String?            @unique @db.VarChar(255)
+  firstName        String?            @map("first_name") @db.VarChar(255)
+  lastName         String?            @map("last_name") @db.VarChar(255)
+  email            String?            @unique
+  mobileNumber     String?            @unique @map("mobile_number")
+  avatarUrl        String?            @map("avatar_url") @db.VarChar(255)
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
+  accountStatus    AccountStatus      @default(UNVERIFIED)
+  role             UserRole           @default(BUYER)
+  addonPayment     addonPayment[]
+  admin            admin?
+  bookings         bookings[]
+  bookmark         bookmark[]
+  buyer            buyer?
+  comments         comments[]
+  events           events[]
+  featured         featured[]
+  receivedMessages message[]          @relation("receivedMessages")
+  sentMessages     message[]          @relation("sentMessages")
+  promotionPayment promotionPayment[]
+  reviews          reviews[]
+  trending         trending[]
+  vendor           vendor?
+  paymentRollouts  payment_rollouts[] @relation("doneByUser")
+  notifications    notifications[]
+
+  @@map("users")
+}
+
+model otps {
+  id           String    @id @default(uuid())
+  mobileNumber String?   @map("mobile_number") @db.VarChar(15)
+  email        String?   @db.VarChar(255)
+  otp          String    @db.VarChar(6)
+  expiresAt    DateTime? @map("expires_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@map("otps")
+}
+
+model admin {
+  userId    String   @id @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  user      users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin")
+}
+
+model vendor {
+  userId               String   @id @map("user_id")
+  govermentPhotoIdUrls String[] @map("goverment_photo_id_urls")
+  aadharNumber         String?  @unique @map("aadhar_number") @db.VarChar(30)
+  bankAccountNumber    String?  @unique @map("bank_account_number") @db.VarChar(20)
+  gstNumber            String?  @unique @map("gst_number") @db.VarChar(20)
+  ifscCode             String?  @map("ifsc_code") @db.VarChar(20)
+  panNumber            String?  @unique @map("pan_number") @db.VarChar(20)
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  percentageCut        Float?
+  user                 users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("vendor")
+}
+
+model buyer {
+  userId                String   @id @map("user_id")
+  recoveryEmail         String?  @db.VarChar(255)
+  emergencyMobileNumber String?  @map("emergency_mobile_number") @db.VarChar(15)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  address               String?  @map("address") @db.VarChar(255)
+  user                  users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("buyer")
+}
+
+model events {
+  id                    String                  @id @default(uuid())
+  title                 String
+  description           String
+  eventSpecificType     String?
+  sportType             String?
+  tags                  String?
+  host                  String?
+  images                String[]
+  amenities             String[]
+  termsAndConditions    String?
+  language              String?
+  slots                 Json?
+  status                EventStatus             @default(PENDING)
+  visibility            Visibility              @default(PUBLIC)
+  location              String
+  landmark              String?
+  city                  String
+  state                 String
+  country               String
+  pincode               String
+  isHomeService         Boolean                 @default(false)
+  createdAt             DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime                @default(now()) @map("updated_at") @db.Timestamptz(6)
+  eventType             String?
+  isHaveSlots           Boolean                 @default(false)
+  isOnline              Boolean                 @default(false)
+  isTeamEvent           Boolean                 @default(false)
+  multipleDays          Boolean                 @default(false)
+  endDate               String?
+  endingTime            String?
+  maximumParticipants   Int?
+  minimumParticipants   Int?
+  slotDuration          Int?
+  startDate             String?
+  startingTime          String?
+  teamSize              Int?
+  vendorId              String?
+  weekDays              String[]
+  numberOfDays          Int?
+  seoTags               String[]
+  isMonthlySubscription Boolean?                @default(false)
+  addonPayment          addonPayment[]
+  bookingChart          bookingChart[]
+  bookingDetails        booking_details_types[]
+  bookings              bookings[]
+  bookmark              bookmark[]
+  users                 users?                  @relation(fields: [vendorId], references: [id], onUpdate: NoAction)
+  featured              featured?
+  promotionPayment      promotionPayment[]
+  reviews               reviews[]
+  trending              trending?
+
+  @@map("events")
+}
+
+model bookingChart {
+  id               String     @id @default(uuid())
+  eventId          String
+  date             String
+  slot             Json?
+  bookedSeats      Int
+  isBookingEnabled Boolean?   @default(true)
+  events           events     @relation(fields: [eventId], references: [id])
+  bookings         bookings[]
+}
+
+model booking_details_types {
+  id           String   @id @default(uuid())
+  type         String   @db.VarChar(50)
+  membersCount Int?
+  title        String?  @db.VarChar(255)
+  amount       Float
+  months       Int?
+  currency     String   @default("INR") @db.VarChar(10)
+  description  String?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  eventId      String
+  updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  currencyIcon String   @default("₹") @db.VarChar(10)
+  event        events   @relation(fields: [eventId], references: [id])
+
+  @@map("booking_details_types")
+}
+
+model bookings {
+  id                 String            @id @default(uuid())
+  userId             String
+  eventId            String
+  isGroupBooking     Boolean
+  members            Json[]            @default([])
+  totalAmount        Float
+  totalAmountWithTax Float?
+  tickets            Json[]            @default([])
+  currency           String?           @default("INR")
+  paymentId          String?
+  orderId            String            @unique
+  createdAt          DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  bookingChartId     String?
+  status             PaymentStatus     @default(PENDING)
+  currencyIcon       String            @default("₹") @db.VarChar(10)
+  bookedSlot         bookingChart?     @relation(fields: [bookingChartId], references: [id])
+  event              events            @relation(fields: [eventId], references: [id])
+  user               users             @relation(fields: [userId], references: [id])
+  paymentRollout     payment_rollouts?
+
+  @@map("bookings")
+}
+
+model payment_rollouts {
+  id          String      @id @default(uuid())
+  bookingId   String      @unique
+  paymentDate DateTime
+  paymentMode PaymentMode
+  amount      Float
+  doneById    String
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
+  booking     bookings    @relation(fields: [bookingId], references: [id])
+  doneBy      users       @relation("doneByUser", fields: [doneById], references: [id])
+
+  @@map("payment_rollouts")
+}
+
+model promotionPayment {
+  id                       String                   @id @default(uuid())
+  userId                   String
+  eventId                  String
+  totalAmount              Float
+  packageId                String
+  paymentId                String?
+  orderId                  String                   @unique
+  status                   PaymentStatus            @default(PENDING)
+  createdAt                DateTime                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                DateTime                 @default(now()) @map("updated_at") @db.Timestamptz(6)
+  event_addon_packagesId   String?
+  event                    events                   @relation(fields: [eventId], references: [id])
+  event_addon_packages     event_addon_packages?    @relation(fields: [event_addon_packagesId], references: [id])
+  event_promotion_packages event_promotion_packages @relation(fields: [packageId], references: [id])
+  user                     users                    @relation(fields: [userId], references: [id])
+
+  @@map("promotionPayment")
+}
+
+model addonPayment {
+  id                   String               @id @default(uuid())
+  userId               String
+  eventId              String
+  totalAmount          Float
+  addonId              String
+  paymentId            String?
+  orderId              String               @unique
+  status               PaymentStatus        @default(PENDING)
+  createdAt            DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime             @default(now()) @map("updated_at") @db.Timestamptz(6)
+  event_addon_packages event_addon_packages @relation(fields: [addonId], references: [id])
+  event                events               @relation(fields: [eventId], references: [id])
+  user                 users                @relation(fields: [userId], references: [id])
+
+  @@map("addonPayment")
+}
+
+model reviews {
+  id        String     @id @default(uuid())
+  userId    String?    @map("user_id")
+  comment   String?
+  rating    Int
+  visible   Boolean    @default(true)
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime   @default(now()) @map("updated_at") @db.Timestamptz(6)
+  eventId   String?
+  comments  comments[]
+  events    events?    @relation(fields: [eventId], references: [id])
+  users     users?     @relation(fields: [userId], references: [id])
+
+  @@map("reviews")
+}
+
+model comments {
+  id        String   @id @default(uuid())
+  content   String
+  reviewId  String   @map("review_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  review    reviews  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  eventId   String
+  createdAt DateTime @default(now())
+  event     events   @relation(fields: [eventId], references: [id])
+  user      users    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, eventId])
+  @@map("bookmarks")
+}
+
+model featured {
+  id         String   @id @default(uuid())
+  eventId    String   @unique
+  featuredBy String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  event      events   @relation(fields: [eventId], references: [id])
+  user       users?   @relation(fields: [featuredBy], references: [id])
+
+  @@map("featured")
+}
+
+model event_promotion_packages {
+  id                 String             @id @default(uuid())
+  createdAt          DateTime           @default(now())
+  packageCurrency    String
+  packageDescription Json
+  packageDuration    Int
+  packageName        String
+  packagePrice       Decimal
+  updatedAt          DateTime           @default(now())
+  promotionPayment   promotionPayment[]
+
+  @@map("event_promotion_packages")
+}
+
+model event_addon_packages {
+  id               String             @id @default(uuid())
+  title            String
+  description      String
+  price            Decimal
+  currency         String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now())
+  addonPayment     addonPayment[]
+  promotionPayment promotionPayment[]
+
+  @@map("event_addon_packages")
+}
+
+model message {
+  id         String   @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now())
+  senderId   String   @map("sender_id")
+  receiverId String   @map("receiver_id")
+  receiver   users    @relation("receivedMessages", fields: [receiverId], references: [id])
+  sender     users    @relation("sentMessages", fields: [senderId], references: [id])
+}
+
+model trending {
+  id         String   @id @default(uuid())
+  eventId    String   @unique
+  trendingBy String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  event      events   @relation(fields: [eventId], references: [id])
+  user       users?   @relation(fields: [trendingBy], references: [id])
+
+  @@map("trending")
+}
+
+model notifications {
+  id        String   @id @default(uuid())
+  userId    String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  user      users    @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+enum UserRole {
+  ADMIN
+  VENDOR
+  BUYER
+}
+
+enum PaymentMode {
+  CASH
+  BANK_TRANSFER
+  UPI
+  CHEQUE
+}
+
+enum EventStatus {
+  PENDING
+  PUBLISHED
+  UNPUBLISHED
+}
+
+enum AccountStatus {
+  UNVERIFIED
+  VERIFIED
+  SUSPENDED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum TeamType {
+  INDIVIDUAL
+  TEAM
+}
+
+enum TicketStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  USED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}

@@ -1,0 +1,15 @@
+{
+	"sqltools.connections": [
+		{
+			"previewLimit": 50,
+			"server": "localhost",
+			"port": 5442,
+			"askForPassword": true,
+			"driver": "PostgreSQL",
+			"name": "murb-db",
+			"database": "murb-backend",
+			"username": "root"
+		}
+	],
+	"aicursor.model": "gpt-4"
+}
