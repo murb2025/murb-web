@@ -168,7 +168,7 @@ export const adminRouter = router({
 					orderBy: { [sortBy]: sortOrder.toLowerCase() },
 					include: {
 						bookingDetails: true,
-						bookingChart: true,
+						bookingChart: false,
 						promotionPayment: true,
 						featured: true,
 						users: {
@@ -187,6 +187,11 @@ export const adminRouter = router({
 								comment: true,
 								createdAt: true,
 							},
+						},
+						_count : {
+							select : {
+								bookingChart : true
+							}
 						},
 					},
 				});

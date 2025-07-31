@@ -320,7 +320,7 @@ const EventCard: React.FC<EventCardProps> = ({
 							{eventData?.isHaveSlots ? "Multiple slots available" : formattedTime}
 						</span>
 					</div> */}
-					{/* <div className="flex items-center gap-3">
+					<div className="flex items-center gap-3">
 						{eventData?.isOnline ? (
 							<Globe className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-[#CE8330]" />
 						) : eventData?.isHomeService ? (
@@ -329,7 +329,7 @@ const EventCard: React.FC<EventCardProps> = ({
 							<MapPin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-[#CE8330]" />
 						)}
 						<span className="text-xs sm:text-sm font-medium capitalize text-black">{location}</span>
-					</div> */}
+					</div>
 					{eventData?.minimumParticipants && (
 						<div className="flex items-center gap-3">
 							<Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#CE8330]" />

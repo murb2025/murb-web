@@ -844,6 +844,7 @@ export const eventRouter = router({
 						landmark: true,
 						city: true,
 						state: true,
+						country : true,
 						tags: true,
 						maximumParticipants: true,
 						slots : true,
