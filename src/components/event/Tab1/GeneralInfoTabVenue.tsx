@@ -229,13 +229,13 @@ const GeneralInfoTabVenue = ({
 								htmlFor="title"
 								className="block text-lg sm:text-xl md:text-[22px] font-normal text-[#1F1F1F] mb-1"
 							>
-								Title of the Venue
+								Name of the Sport								
 							</Label>
 							<Input
 								id="title"
 								value={event.title || ""}
 								onChange={(e) => handleInputChange("title", e.target.value)}
-								placeholder={`Title of the Venue`}
+								placeholder={`Name of the Sport`}
 								className="bg-white shadow-md mt-2 focus:outline-none focus:border-[#DAC0A3] border border-transparent text-lg text-[#8E7777]"
 							/>
 						</div>
