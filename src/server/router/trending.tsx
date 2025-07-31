@@ -142,6 +142,7 @@ export const trendingRouter = router({
 						landmark: true,
 						city: true,
 						state: true,
+						country : true,
 						tags: true,
 						slots : true,
 						bookingDetails : true,

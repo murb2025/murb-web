@@ -44,6 +44,7 @@ export const featuredRouter = router({
 							landmark: true,
 							city: true,
 							state: true,
+							country : true,
 							tags: true,
 							slots : true,
 							_count : {
