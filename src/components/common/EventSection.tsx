@@ -133,8 +133,8 @@ const EventSection: React.FC<EventSectionProps> = ({
 										event.isOnline
 											? "Online event"
 											: event.isHomeService
-												? `Home Service in ${event.city}, ${event.state}, ${event.country}`
-												: `${event.city}, ${event.state}, ${event.country}`
+												? `Home Service in ${event.landmark}, ${event.city}, ${event.state}, ${event.country}`
+												: `${event.landmark}, ${event.city}, ${event.state}, ${event.country}`
 									}
 									type={type || "BUYER"}
 									seatsLeft={

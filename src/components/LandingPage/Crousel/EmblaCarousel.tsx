@@ -131,14 +131,14 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 											<Calendar className="w-5 h-5" />
 											<span className="text-[12px] font-medium">{slide.date}</span>
 										</div>
-										{/* <div className="flex items-center gap-3">
+										<div className="flex items-center gap-3">
 											{slide?.isOnline ? (
 												<Globe className="w-5 h-5" />
 											) : (
 												<MapPin className="w-5 h-5" />
 											)}
 											<span className="text-[12px] font-medium">{slide.location}</span>
-										</div> */}
+										</div>
 										{/* <div className='flex items-center gap-3'>
                                             <UserIcon className="w-5 h-5 text-[#CE8330]" />
                                             <span className="text-[12px] font-medium text-black">Ticket Left: {slide.ticketLeft}</span>

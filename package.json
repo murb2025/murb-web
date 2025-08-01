@@ -60,6 +60,7 @@
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"cmdk": "1.0.0",
+		"country-state-city": "^3.2.1",
 		"csstype": "^3.0.10",
 		"date-fns": "^3.0.0",
 		"embla-carousel-autoplay": "^8.5.2",
