@@ -74,7 +74,7 @@ export const featuredRouter = router({
 					: moment(event.startDate).format("DD MMM,YYYY"),
 				ticketLeft: 10,
 				location: event.isOnline
-					? event.location
+					? "Online event"
 					: `${event.landmark}, ${event.city}, ${event.state}, ${event.country}`,
 			}));
 		}),
