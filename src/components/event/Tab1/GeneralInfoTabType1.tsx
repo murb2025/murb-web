@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Button, Checkbox, Input, Label, Textarea } from "@/components/ui";
 import { IEvent } from "@/types/event.type";
 import Select from "react-select";
-import axios from "axios";
+import { Country, State, City } from "country-state-city";
 import { eventSpecificTypeEnum } from "@/constants/event.constant";
 import { toast } from "react-hot-toast";
 
@@ -24,71 +24,70 @@ const GeneralInfoTabType1 = ({
 	};
 
 	const [isLoading, setIsLoading] = useState(false);
-	const [countryOptions, setCountryOptions] = useState([]);
-	const [stateOptions, setStateOptions] = useState([]);
-	const [cityOptions, setCityOptions] = useState([]);
+	interface SelectOption {
+		value: string;
+		label: string;
+	}
+
+	const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
+	const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
+	const [cityOptions, setCityOptions] = useState<SelectOption[]>([]);
 
 	useEffect(() => {
-		// Fetch countries from REST Countries API
-		axios
-			.get("https://restcountries.com/v2/all?fields=name")
-			.then((response) => {
-				const countryNames = response.data.map((country: any) => country.name);
-				setCountryOptions(
-					countryNames.map((country: any, index: any) => ({
-						value: index,
-						label: country,
-					})),
-				);
-			})
-			.catch((error) => {
-				console.error("Error fetching countries:", error);
-			});
+		// Get all countries
+		const countries = Country.getAllCountries();
+		setCountryOptions(
+			countries.map((country) => ({
+				value: country.isoCode,
+				label: country.name,
+			})),
+		);
 	}, []);
 
 	useEffect(() => {
-		// Fetch states based on the selected country
+		// Get states for selected country
 		if (event.country) {
-			axios
-				.post(`https://countriesnow.space/api/v0.1/countries/states`, {
-					country: event.country,
-				})
-				.then((response) => {
-					const selectedCountryData = response.data.data.states;
-					const states = selectedCountryData?.map((state: any) => state.name) || [];
-					setStateOptions(
-						states.map((state: any, index: any) => ({
-							value: index,
-							label: state,
-						})),
-					);
-				})
-				.catch((error) => {
-					console.error("Error fetching states:", error);
-				});
+			const selectedCountry = Country.getAllCountries().find(
+				(country) => country.name === event.country
+			);
+			
+			if (selectedCountry) {
+				const states = State.getStatesOfCountry(selectedCountry.isoCode);
+				setStateOptions(
+					states.map((state) => ({
+						value: state.isoCode,
+						label: state.name,
+					})),
+				);
+			}
 		}
 	}, [event.country]);
 
 	useEffect(() => {
-		// Fetch cities using a weather API (OpenWeatherMap in this example)
+		// Get cities for selected state and country
 		if (event.country && event.state) {
-			axios
-				.post(`https://countriesnow.space/api/v0.1/countries/state/cities`, {
-					country: event.country,
-					state: event.state,
-				})
-				.then((response) => {
-					const cities = response.data.data;
+			const selectedCountry = Country.getAllCountries().find(
+				(country) => country.name === event.country
+			);
+			
+			if (selectedCountry) {
+				const selectedState = State.getStatesOfCountry(selectedCountry.isoCode).find(
+					(state) => state.name === event.state
+				);
+
+				if (selectedState) {
+					const cities = City.getCitiesOfState(
+						selectedCountry.isoCode,
+						selectedState.isoCode
+					);
 					setCityOptions(
-						cities.map((city: any, index: any) => ({
-							value: index,
-							label: city,
+						cities.map((city) => ({
+							value: city.name,
+							label: city.name,
 						})),
 					);
-				})
-				.catch((error) => {
-					console.error("Error fetching cities:", error);
-				});
+				}
+			}
 		}
 	}, [event.country, event.state]);
 
