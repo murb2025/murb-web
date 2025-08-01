@@ -75,7 +75,7 @@ export const featuredRouter = router({
 				ticketLeft: 10,
 				location: event.isOnline
 					? event.location
-					: `${event.landmark}, ${event.city}, ${event.state}`,
+					: `${event.landmark}, ${event.city}, ${event.state}, ${event.country}`,
 			}));
 		}),
 });
